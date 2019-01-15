@@ -1,0 +1,73 @@
+#CREATING A MULTICAST NETWORK TOPOLOGY USING 5 NODES
+
+#Creating a Multicast Network Simulator Object
+set ns [new Simulator -multicast on] ;
+
+#Define different colors for data flows (for NAM)
+$ns color 1 Blue
+
+#Creating a Trace File to store Data Flow
+set trace [open a3.tr w]
+$ns trace-all $trace
+
+#Creating a NAM File to analyze netwrk topology
+set namtrace [open a3.nam w]
+$ns namtrace-all $namtrace
+
+set group [Node allocaddr] ;
+
+#Creating Nodes
+set node0 [$ns node]
+set node1 [$ns node]
+set node2 [$ns node]
+set node3 [$ns node]
+set node4 [$ns node]
+
+#Creating a duplex link between nodes with BW, Delay and QueueType specified
+$ns duplex-link $node0 $node1 1.5Mb 10ms DropTail
+$ns duplex-link $node0 $node2 800Kb 40ms DropTail
+$ns duplex-link $node0 $node3 1Mb 100ms DropTail
+$ns duplex-link $node0 $node4 500Kb 30ms DropTail
+
+#Creating the orientation between the different nodes required for visualization
+$ns duplex-link-op $node0 $node1 orient left-up
+$ns duplex-link-op $node0 $node2 orient left-down
+$ns duplex-link-op $node0 $node3 orient right-up
+$ns duplex-link-op $node0 $node4 orient right-down
+
+#Protocols: CtrMcast, DM, ST, BST
+set mproto DM ;# configure multicast protocol
+set mrthandle [$ns mrtproto $mproto] ;# all nodes will contain multicast protocol agents
+
+set udp [new Agent/UDP] ;# create a source agent at node 0
+$ns attach-agent $node0 $udp
+set src [new Application/Traffic/CBR]
+$src attach-agent $udp
+$udp set dst_addr_ $group
+$udp set dst_port_ 0
+$udp set fid_ 1
+set rcvr [new Agent/LossMonitor] ;
+$ns attach-agent $node1 $rcvr
+$ns at 0.3 "$node1 join-group $rcvr $group" ;
+
+set rcvr2 [new Agent/LossMonitor] ;
+$ns attach-agent $node2 $rcvr2
+$ns at 0.3 "$node2 join-group $rcvr2 $group" ;
+
+set rcvr3 [new Agent/LossMonitor] ;
+$ns attach-agent $node3 $rcvr3
+$ns at 0.3 "$node3 join-group $rcvr3 $group" ;
+
+set rcvr4 [new Agent/LossMonitor] ;
+$ns attach-agent $node4 $rcvr4
+$ns at 0.3 "$node4 join-group $rcvr4 $group" ;
+
+$ns at 3.3 "$node2 leave-group $rcvr2 $group" ;
+$ns at 4.3 "$node4 leave-group $rcvr4 $group" ;
+
+$ns at 1.0 "$src start"
+$ns at 7.0 "$src stop"
+
+
+$ns at 10.0 "$ns halt"
+$ns run
