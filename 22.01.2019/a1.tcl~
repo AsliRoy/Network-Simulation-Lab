@@ -1,0 +1,75 @@
+set ns [new Simulator]
+
+# Creating trace file and nam file
+
+#Creating a Trace File to store Data Flow
+set tr [open a1.tr w]
+$ns trace-all $tr
+
+#Creating a NAM File to analyze netwrk topology
+set namtr [open a1.nam w]
+$ns namtrace-all $namtr
+set god_ [create-god $val(nn)]
+
+# configure the nodes
+        $ns node-config -adhocRouting $val(rp) \
+                   -llType $val(ll) \
+                   -macType $val(mac) \
+                   -ifqType $val(ifq) \
+                   -ifqLen $val(ifqlen) \
+                   -antType $val(ant) \
+                   -propType $val(prop) \
+                   -phyType $val(netif) \
+                   -channelType $val(chan) \
+                   -topoInstance $topo \
+                   -agentTrace ON \
+                   -routerTrace ON \
+                   -macTrace OFF \
+                   -movementTrace ON
+                   
+## Creating node objects...        
+for {set i 0} {$i < $val(nn) } { incr i } {
+            set node_($i) [$ns node]     
+      }
+      for {set i 0} {$i < $val(nn)  } {incr i } {
+            $node_($i) color black
+            $ns at 0.0 "$node_($i) color black"
+      }
+
+# Provide initial location of mobile nodes
+$node_(0) set X_ 50.0
+$node_(0) set Y_ 50.0
+$node_(0) set Z_ 0.0
+
+$node_(1) set X_ 200.0
+$node_(1) set Y_ 250.0
+$node_(1) set Z_ 0.0
+
+$node_(2) set X_ 300.0
+$node_(2) set Y_ 300.0
+$node_(2) set Z_ 0.0
+
+# Define node initial position in nam
+for {set i 0} {$i < $val(nn)} { incr i } {
+$ns initial_node_pos $node_($i) 30
+}
+
+# Telling nodes when the simulation ends
+for {set i 0} {$i < $val(nn) } { incr i } {
+    $ns at $val(stop) "$node_($i) reset";
+}
+
+# Ending nam and the simulation
+$ns at $val(stop) "$ns nam-end-wireless $val(stop)"
+$ns at $val(stop) "stop"
+$ns at 10.01 "puts \"end simulation\"; $ns halt"
+#stop procedure:
+proc stop {} {
+    global ns tracefd namtrace
+    $ns flush-trace
+    close $tracefd
+    close $namtrace
+exec nam wireless1.nam &
+}
+
+$ns run
