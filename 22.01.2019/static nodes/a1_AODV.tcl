@@ -55,26 +55,6 @@ set node_($i) [$ns_ node]
 }
 
 
-$node_(0) set X_ 25.0
-$node_(0) set Y_ 50.0
-$node_(1) set X_ 10.0
-$node_(1) set Y_ 50.0
-$node_(2) set X_ 250.0
-$node_(2) set Y_ 150.0
-$node_(3) set X_ 210.0
-$node_(3) set Y_ 150.0
-$node_(4) set X_ 25.0
-$node_(4) set Y_ 250.0
-$node_(5) set X_ 50.0
-$node_(5) set Y_ 250.0
-$node_(6) set X_ 25.0
-$node_(6) set Y_ 150.0
-$node_(7) set X_ 100.0
-$node_(7) set Y_ 50.0
-$node_(8) set X_ 250.0
-$node_(8) set Y_ 100.0
-$node_(9) set X_ 80.0
-$node_(9) set Y_ 170.0
 
 
 

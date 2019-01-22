@@ -77,16 +77,7 @@ $node_(9) set X_ 80.0
 $node_(9) set Y_ 170.0
 
 
-$ns_ at 0.0 "$node_(1) setdest 25.0 50.0 3000.0"
-$ns_ at 0.0 "$node_(0) setdest 10.0 50.0 3000.0"
-$ns_ at 0.0 "$node_(3) setdest 250.0 150.0 3000.0"
-$ns_ at 0.0 "$node_(2) setdest 210.0 150.0 3000.0"
-$ns_ at 0.0 "$node_(5) setdest 25.0 250.0 3000.0"
-$ns_ at 0.0 "$node_(4) setdest 50.0 250.0 3000.0"
-$ns_ at 0.0 "$node_(6) setdest 25.0 150.0 3000.0"
-$ns_ at 0.0 "$node_(7) setdest 100.0 50.0 3000.0"
-$ns_ at 0.0 "$node_(8) setdest 250.0 100.0 3000.0"
-$ns_ at 0.0 "$node_(9) setdest 80.0 170.0 3000.0"
+
 
 # Setup traffic flow between nodes
 # TCP connections between node_(0) and node_(1)
