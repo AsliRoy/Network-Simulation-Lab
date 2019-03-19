@@ -6,11 +6,11 @@ set val(mac) Mac/802_11 ;# MAC type
 set val(ifq) Queue/DropTail/PriQueue ;# interface queue type
 set val(ll) LL ;# link layer type
 set val(ant) Antenna/OmniAntenna ;# antenna model
-set val(ifqlen) 50 ;# max packet in ifq
-set val(nn) 20 ;# number of mobilenodes
-set val(rp) DSDV ;# routing protocol
+set val(ifqlen) 30 ;# max packet in ifq
+set val(nn) 42 ;# number of mobilenodes
+set val(rp) AODV ;# routing protocol
 set val(x) 500 ;# X dimension of topography
-set val(y) 250 ;# Y dimension of topography
+set val(y) 500 ;# Y dimension of topography
 set val(stop) 50 ;# time of simulation end
 set val(energymodel) EnergyModel ;# Energy set up
 
@@ -18,9 +18,9 @@ set val(energymodel) EnergyModel ;# Energy set up
 set ns_ [new Simulator]
 
 # Create the nam and trace file
-set tracefd [open a1.tr w]
+set tracefd [open a2.tr w]
 $ns_ trace-all $tracefd
-set namtrace [open a1.nam w]
+set namtrace [open a2.nam w]
 $ns_ namtrace-all-wireless $namtrace  $val(x) $val(y)
 
 $ns_ use-newtrace
@@ -64,43 +64,50 @@ for {set i 0} {$i < $val(nn)} {incr i} {
 
 
 # Setting the initial positions of nodes
-for {set i 0} {$i < $val(nn)} {incr i} {
-    $n($i) set X_ [expr ($i % 10 ) * 50 + 50]
-    $n($i) set Y_ [expr ($i / 10 ) * 50 + 50]
+for {set i 0} {$i < 8} {incr i} {
+    $n($i) set X_ [expr 250 + 50 * cos( $i * 0.785 ) ]
+    $n($i) set Y_ [expr 250 + 50 * sin( $i * 0.785 )]
     $n($i) set Z_ 0.0
 }
+
+for {set i 8} {$i < 20} {incr i} {
+    $n($i) set X_ [expr 250 + 100 * cos( $i * 0.523 ) ]
+    $n($i) set Y_ [expr 250 + 100 * sin( $i * 0.523 )]
+    $n($i) set Z_ 0.0
+}
+
+for {set i 20} {$i < 40} {incr i} {
+    $n($i) set X_ [expr 250 + 150 * cos( $i * 0.314 ) ]
+    $n($i) set Y_ [expr 250 + 150 * sin( $i * 0.314 )]
+    $n($i) set Z_ 0.0
+}
+
+$n(40) set X_ 250
+    $n(40) set Y_ 250
+    $n(40) set Z_ 0.0
+
+$n(41) set X_ 2.0
+$n(41) set Y_ 2.0
+$n(41) set Z_ 0.0
+
+
 
 # Setting the node size
 for {set i 0} {$i < $val(nn)} {incr i} {
     $ns_ initial_node_pos $n($i) 10
 }
 
-set n([expr ($i + 1)]) [$ns_ node]
-$n([expr ($i + 1)]) set X_ 2.0
-$n([expr ($i + 1)]) set Y_ 2.0
-$n([expr ($i + 1)]) set Z_ 0.0 
 
 
-$ns_ at 0.2 "$n([expr ($i + 1)]) setdest 299.0 240.0 25.0" 
-$ns_ at 49.0 "$n([expr ($i + 1)]) setdest 499.0 2.0 50.0"
-
-$ns_ initial_node_pos $n([expr ($i + 1)]) 10
-
-
-
-
-# Establishing communication
 set dest [new Agent/Null]
-#$ns_ attach-agent $n([expr $val(nn) - 1]) $dest
-$ns_ attach-agent $n([expr $i / 2]) $dest
-#for {set i 0} {$i < [expr $val(nn) - 1]} {incr i} {
-    set udp [new Agent/UDP]
-    $ns_ attach-agent $n([expr ($i + 1)]) $udp
-    $ns_ connect $udp $dest
-    set cbr [new Application/Traffic/CBR]
-    $cbr attach-agent $udp
-    $cbr set packetSize_ 512
-    #$ns_ at [expr $i * 2] "$cbr start"
+$ns_ attach-agent $n(40) $dest
+set udp [new Agent/UDP]
+$ns_ attach-agent $n(41) $udp
+$ns_ connect $udp $dest
+set cbr [new Application/Traffic/CBR]
+$cbr attach-agent $udp
+$cbr set packetSize_ 512
+  
 $ns_ at 0.0 "$cbr start"
     $ns_ at 50.0 "$cbr stop"
 
@@ -110,7 +117,7 @@ proc stop {} {
       global ns_ tracefd
       $ns_ flush-trace
       close $tracefd
-      exec nam a1.nam &
+      exec nam a2.nam &
       exit 0
 }
 
