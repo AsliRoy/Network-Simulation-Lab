@@ -1,0 +1,9 @@
+1. Download ns-allinone-2.34 from sourceforge
+
+2. Make changes as according to http://surajpatilworld.blogspot.com/2015/02/step-by-step-installation-of-ns-234-on.html . Use https://erl1.wordpress.com/2011/05/12/installing-ns-2-34-on-ubuntu-11-04/ for line number reference.
+
+3. Copy the leach ns 2.34 folder and merge.
+
+4. Run install.
+
+5. Make last changes according to https://sipnoobs.wordpress.com/2015/01/05/guidance-to-run-pegasis-and-leach-on-ns-2-2-34/ 
